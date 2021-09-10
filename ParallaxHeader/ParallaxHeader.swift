@@ -437,17 +437,38 @@ public class ParallaxHeader: NSObject {
         }
         let minimumHeight = min(self.minimumHeight, self.height)
         var relativeYOffset = scrollView.contentOffset.y + scrollView.contentInset.top - height
+//         if #available(iOS 11.0, *) {
+//             relativeYOffset += scrollView.safeAreaInsets.top
+//         }
+//         let relativeHeight = -relativeYOffset
+        
+//         let frame = CGRect(
+//             x: 0,
+//             y: relativeYOffset,
+//             width: scrollView.frame.size.width,
+//             height: max(relativeHeight, minimumHeight)
+//         )
+
+///Added started by KP
+        var spaceValue: CGFloat = 0
         if #available(iOS 11.0, *) {
-            relativeYOffset += scrollView.safeAreaInsets.top
+            //relativeYOffset += scrollView.safeAreaInsets.top
+            let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+            spaceValue = bottom > 0 ? 7 : 0
+        } else {
+            // Fallback on earlier versions
         }
+        
         let relativeHeight = -relativeYOffset
         
         let frame = CGRect(
             x: 0,
-            y: relativeYOffset,
+            y: relativeYOffset - spaceValue,
             width: scrollView.frame.size.width,
             height: max(relativeHeight, minimumHeight)
         )
+///Added ended by KP
+        
         contentView.frame = frame
         
         let div = self.height - self.minimumHeight
